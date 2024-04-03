@@ -17,6 +17,9 @@ class SugiyamaConfiguration {
   int iterations = DEFAULT_ITERATIONS;
   BendPointShape bendPointShape = SharpBendPointShape();
   CoordinateAssignment coordinateAssignment = CoordinateAssignment.Average;
+  EdgeRenderer? edgeRenderer;
+
+  bool alignRootNodesCloseToSiblings = true;
 
   bool addTriangleToEdge = true;
 
