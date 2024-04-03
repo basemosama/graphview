@@ -58,7 +58,8 @@ class _LayeredGraphViewPageState extends State<LayeredGraphViewPage> {
                       Text('Alignment'),
                       DropdownButton<CoordinateAssignment>(
                         value: builder.coordinateAssignment,
-                        items: CoordinateAssignment.values.map((coordinateAssignment) {
+                        items: CoordinateAssignment.values
+                            .map((coordinateAssignment) {
                           return DropdownMenuItem<CoordinateAssignment>(
                             value: coordinateAssignment,
                             child: Text(coordinateAssignment.name),
@@ -76,7 +77,8 @@ class _LayeredGraphViewPageState extends State<LayeredGraphViewPage> {
                 ElevatedButton(
                   onPressed: () {
                     final node12 = Node.Id(r.nextInt(100));
-                    var edge = graph.getNodeAtPosition(r.nextInt(graph.nodeCount()));
+                    var edge =
+                        graph.getNodeAtPosition(r.nextInt(graph.nodeCount()));
                     print(edge);
                     graph.addEdge(edge, node12);
                     setState(() {});

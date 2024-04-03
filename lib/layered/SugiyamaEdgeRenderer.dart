@@ -6,7 +6,8 @@ class SugiyamaEdgeRenderer extends ArrowEdgeRenderer {
   BendPointShape bendPointShape;
   bool addTriangleToEdge;
 
-  SugiyamaEdgeRenderer(this.nodeData, this.edgeData, this.bendPointShape, this.addTriangleToEdge);
+  SugiyamaEdgeRenderer(this.nodeData, this.edgeData, this.bendPointShape,
+      this.addTriangleToEdge);
 
   var path = Path();
 
@@ -46,10 +47,11 @@ class SugiyamaEdgeRenderer extends ArrowEdgeRenderer {
         final size = bendPoints.length;
 
         if (nodeData[source]!.isReversed) {
-          clippedLine = clipLine(bendPoints[2], bendPoints[3], bendPoints[0], bendPoints[1], destination);
+          clippedLine = clipLine(bendPoints[2], bendPoints[3], bendPoints[0],
+              bendPoints[1], destination);
         } else {
-          clippedLine = clipLine(
-              bendPoints[size - 4], bendPoints[size - 3], bendPoints[size - 2], bendPoints[size - 1], destination);
+          clippedLine = clipLine(bendPoints[size - 4], bendPoints[size - 3],
+              bendPoints[size - 2], bendPoints[size - 1], destination);
         }
 
         path.reset();
@@ -76,14 +78,20 @@ class SugiyamaEdgeRenderer extends ArrowEdgeRenderer {
           _drawMaxCurvedBendPointsEdge(bendPointsWithoutDuplication);
         } else if (bendPointShape is CurvedBendPointShape) {
           final shape = bendPointShape as CurvedBendPointShape;
-          _drawCurvedBendPointsEdge(bendPointsWithoutDuplication, shape.curveLength);
+          _drawCurvedBendPointsEdge(
+              bendPointsWithoutDuplication, shape.curveLength);
         } else {
           _drawSharpBendPointsEdge(bendPointsWithoutDuplication);
         }
 
         if (addTriangleToEdge) {
           final triangleCentroid = drawTriangle(
-              canvas, edgeTrianglePaint ?? trianglePaint, clippedLine[0], clippedLine[1], clippedLine[2], clippedLine[3]);
+              canvas,
+              edgeTrianglePaint ?? trianglePaint,
+              clippedLine[0],
+              clippedLine[1],
+              clippedLine[2],
+              clippedLine[3]);
 
           path.lineTo(triangleCentroid[0], triangleCentroid[1]);
         } else {
@@ -102,14 +110,18 @@ class SugiyamaEdgeRenderer extends ArrowEdgeRenderer {
 
         if (addTriangleToEdge) {
           final triangleCentroid = drawTriangle(
-              canvas, edgeTrianglePaint ?? trianglePaint, clippedLine[0],
-              clippedLine[1], clippedLine[2], clippedLine[3]);
+              canvas,
+              edgeTrianglePaint ?? trianglePaint,
+              clippedLine[0],
+              clippedLine[1],
+              clippedLine[2],
+              clippedLine[3]);
 
-          canvas.drawLine(
-              Offset(clippedLine[0], clippedLine[1]), Offset(triangleCentroid[0], triangleCentroid[1]), currentPaint);
+          canvas.drawLine(Offset(clippedLine[0], clippedLine[1]),
+              Offset(triangleCentroid[0], triangleCentroid[1]), currentPaint);
         } else {
-          canvas.drawLine(
-              Offset(clippedLine[0], clippedLine[1]), Offset(stopX, stopY), currentPaint);
+          canvas.drawLine(Offset(clippedLine[0], clippedLine[1]),
+              Offset(stopX, stopY), currentPaint);
         }
       }
     });
@@ -125,8 +137,10 @@ class SugiyamaEdgeRenderer extends ArrowEdgeRenderer {
     for (var i = 1; i < bendPoints.length - 1; i++) {
       final nextNode = bendPoints[i];
       final afterNextNode = bendPoints[i + 1];
-      final curveEndPoint = Offset((nextNode.dx + afterNextNode.dx) / 2, (nextNode.dy + afterNextNode.dy) / 2);
-      path.quadraticBezierTo(nextNode.dx, nextNode.dy, curveEndPoint.dx, curveEndPoint.dy);
+      final curveEndPoint = Offset((nextNode.dx + afterNextNode.dx) / 2,
+          (nextNode.dy + afterNextNode.dy) / 2);
+      path.quadraticBezierTo(
+          nextNode.dx, nextNode.dy, curveEndPoint.dx, curveEndPoint.dy);
     }
   }
 
@@ -137,18 +151,24 @@ class SugiyamaEdgeRenderer extends ArrowEdgeRenderer {
       final nextNode = bendPoints[i];
       final afterNextNode = bendPoints[i + 1];
 
-      final arcStartPointRadians = atan2(nextNode.dy - currentNode.dy, nextNode.dx - currentNode.dx);
-      final arcStartPoint = nextNode - Offset.fromDirection(arcStartPointRadians, curveLength);
-      final arcEndPointRadians = atan2(nextNode.dy - afterNextNode.dy, nextNode.dx - afterNextNode.dx);
-      final arcEndPoint = nextNode - Offset.fromDirection(arcEndPointRadians, curveLength);
+      final arcStartPointRadians =
+          atan2(nextNode.dy - currentNode.dy, nextNode.dx - currentNode.dx);
+      final arcStartPoint =
+          nextNode - Offset.fromDirection(arcStartPointRadians, curveLength);
+      final arcEndPointRadians =
+          atan2(nextNode.dy - afterNextNode.dy, nextNode.dx - afterNextNode.dx);
+      final arcEndPoint =
+          nextNode - Offset.fromDirection(arcEndPointRadians, curveLength);
 
       if (previousNode != null &&
           ((currentNode.dx == nextNode.dx && nextNode.dx == afterNextNode.dx) ||
-              (currentNode.dy == nextNode.dy && nextNode.dy == afterNextNode.dy))) {
+              (currentNode.dy == nextNode.dy &&
+                  nextNode.dy == afterNextNode.dy))) {
         path.lineTo(nextNode.dx, nextNode.dy);
       } else {
         path.lineTo(arcStartPoint.dx, arcStartPoint.dy);
-        path.quadraticBezierTo(nextNode.dx, nextNode.dy, arcEndPoint.dx, arcEndPoint.dy);
+        path.quadraticBezierTo(
+            nextNode.dx, nextNode.dy, arcEndPoint.dx, arcEndPoint.dy);
       }
     }
   }

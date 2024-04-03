@@ -47,7 +47,12 @@ class GraphView extends StatefulWidget {
   final bool animated;
 
   GraphView(
-      {Key? key, required this.graph, required this.algorithm, this.paint, required this.builder, this.animated = true})
+      {Key? key,
+      required this.graph,
+      required this.algorithm,
+      this.paint,
+      required this.builder,
+      this.animated = true})
       : super(key: key);
 
   @override
@@ -82,7 +87,12 @@ class _GraphView extends MultiChildRenderObjectWidget {
   final Algorithm algorithm;
   final Paint? paint;
 
-  _GraphView({Key? key, required this.graph, required this.algorithm, this.paint, required NodeWidgetBuilder builder})
+  _GraphView(
+      {Key? key,
+      required this.graph,
+      required this.algorithm,
+      this.paint,
+      required NodeWidgetBuilder builder})
       : super(key: key, children: _extractChildren(graph, builder)) {
     assert(() {
       if (children.isEmpty) {
@@ -113,7 +123,8 @@ class _GraphView extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderCustomLayoutBox renderObject) {
+  void updateRenderObject(
+      BuildContext context, RenderCustomLayoutBox renderObject) {
     renderObject
       ..graph = graph
       ..algorithm = algorithm
@@ -122,7 +133,9 @@ class _GraphView extends MultiChildRenderObjectWidget {
 }
 
 class RenderCustomLayoutBox extends RenderBox
-    with ContainerRenderObjectMixin<RenderBox, NodeBoxData>, RenderBoxContainerDefaultsMixin<RenderBox, NodeBoxData> {
+    with
+        ContainerRenderObjectMixin<RenderBox, NodeBoxData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, NodeBoxData> {
   late Graph _graph;
   late Algorithm _algorithm;
   late Paint _paint;
@@ -243,8 +256,11 @@ class _GraphViewAnimated extends StatefulWidget {
   final stepMilis = 25;
 
   _GraphViewAnimated(
-      {Key? key, required this.graph, required this.algorithm, this.paint, required this.builder}) {
-  }
+      {Key? key,
+      required this.graph,
+      required this.algorithm,
+      this.paint,
+      required this.builder}) {}
 
   @override
   _GraphViewAnimatedState createState() => _GraphViewAnimatedState();
@@ -281,7 +297,8 @@ class _GraphViewAnimatedState extends State<_GraphViewAnimated> {
 
   @override
   Widget build(BuildContext context) {
-    algorithm.setDimensions(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+    algorithm.setDimensions(
+        MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
     return Stack(
       clipBehavior: Clip.none,
@@ -293,7 +310,8 @@ class _GraphViewAnimatedState extends State<_GraphViewAnimated> {
         ...List<Widget>.generate(graph.nodeCount(), (index) {
           return Positioned(
             child: GestureDetector(
-              child: graph.nodes[index].data ?? widget.builder(graph.nodes[index]),
+              child:
+                  graph.nodes[index].data ?? widget.builder(graph.nodes[index]),
               onPanUpdate: (details) {
                 graph.getNodeAtPosition(index).position += details.delta;
                 update();

@@ -7,80 +7,26 @@ class LayerGraphPageFromJson extends StatefulWidget {
 }
 
 class _LayerGraphPageFromJsonState extends State<LayerGraphPageFromJson> {
-  var  json =   {
+  var json = {
     "edges": [
-      {
-        "from": "254022114",
-        "to": "435737192"
-      },
-      {
-        "from": "102061118",
-        "to": "435737192"
-      },
-      {
-        "from": "864374573",
-        "to": "676874082"
-      },
-      {
-        "from": "564905731",
-        "to": "864374573"
-      },
-      {
-        "from": "435737192",
-        "to": "864374573"
-      },
-      {
-        "from": "435737192",
-        "to": "183014792"
-      },
-      {
-        "from": "435737192",
-        "to": "222855694"
-      },
-      {
-        "from": "864342115",
-        "to": "652678503"
-      },
-      {
-        "from": "864342115",
-        "to": "469600377"
-      },
-      {
-        "from": "676874082",
-        "to": "684761235"
-      },
-      {
-        "from": "864374573",
-        "to": "864342115"
-      },
-      {
-        "from": "564905731",
-        "to": "176177853"
-      },
-      {
-        "from": "564905731",
-        "to": "983393593"
-      },
-      {
-        "from": "564905731",
-        "to": "818531897"
-      },
-      {
-        "from": "584192116",
-        "to": "102061118"
-      },
-      {
-        "from": "598554018",
-        "to": "102061118"
-      },
-      {
-        "from": "207392962",
-        "to": "584192116"
-      },
-      {
-        "from": "161904647",
-        "to": "598554018"
-      }
+      {"from": "254022114", "to": "435737192"},
+      {"from": "102061118", "to": "435737192"},
+      {"from": "864374573", "to": "676874082"},
+      {"from": "564905731", "to": "864374573"},
+      {"from": "435737192", "to": "864374573"},
+      {"from": "435737192", "to": "183014792"},
+      {"from": "435737192", "to": "222855694"},
+      {"from": "864342115", "to": "652678503"},
+      {"from": "864342115", "to": "469600377"},
+      {"from": "676874082", "to": "684761235"},
+      {"from": "864374573", "to": "864342115"},
+      {"from": "564905731", "to": "176177853"},
+      {"from": "564905731", "to": "983393593"},
+      {"from": "564905731", "to": "818531897"},
+      {"from": "584192116", "to": "102061118"},
+      {"from": "598554018", "to": "102061118"},
+      {"from": "207392962", "to": "584192116"},
+      {"from": "161904647", "to": "598554018"}
     ]
   };
 
@@ -133,7 +79,8 @@ class _LayerGraphPageFromJsonState extends State<LayerGraphPageFromJson> {
                       Text('Alignment'),
                       DropdownButton<CoordinateAssignment>(
                         value: builder.coordinateAssignment,
-                        items: CoordinateAssignment.values.map((coordinateAssignment) {
+                        items: CoordinateAssignment.values
+                            .map((coordinateAssignment) {
                           return DropdownMenuItem<CoordinateAssignment>(
                             value: coordinateAssignment,
                             child: Text(coordinateAssignment.name),
@@ -194,8 +141,7 @@ class _LayerGraphPageFromJsonState extends State<LayerGraphPageFromJson> {
     );
   }
 
-  final Graph graph = Graph()
-    ..isTree = true;
+  final Graph graph = Graph()..isTree = true;
   @override
   void initState() {
     var edges = json['edges']!;
@@ -209,9 +155,7 @@ class _LayerGraphPageFromJsonState extends State<LayerGraphPageFromJson> {
       ..nodeSeparation = (15)
       ..levelSeparation = (15)
       ..orientation = SugiyamaConfiguration.ORIENTATION_TOP_BOTTOM;
-    }
-
   }
+}
 
-  var builder = SugiyamaConfiguration();
-
+var builder = SugiyamaConfiguration();

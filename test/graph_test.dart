@@ -4,9 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Graph', () {
-
     test('Graph Node counts are correct', () {
-      final graph  = Graph();
+      final graph = Graph();
       var node1 = Node.Id('One');
       var node2 = Node.Id('Two');
       var node3 = Node.Id('Three');
@@ -43,7 +42,7 @@ void main() {
     });
 
     test('Node Hash Implementation is performant', () {
-      final graph  = Graph();
+      final graph = Graph();
 
       var rows = 1000000;
 
@@ -60,7 +59,6 @@ void main() {
       var stopwatch = Stopwatch()..start();
       for (var i = 1; i <= rows; i++) {
         var hash = node.hashCode;
-
       }
 
       var timeTaken = stopwatch.elapsed.inMilliseconds;
@@ -69,8 +67,5 @@ void main() {
 
       expect(timeTaken < 100, true);
     });
-
-
   });
-
 }
