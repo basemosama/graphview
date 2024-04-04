@@ -96,7 +96,7 @@ class _LayeredGraphViewPageState extends State<LayeredGraphViewPage> {
                   child: GraphView(
                     graph: graph,
                     algorithm: SugiyamaAlgorithm(builder),
-                    paint: Paint()
+                    edgePaintBuilder: (edge) => Paint()
                       ..color = Colors.green
                       ..strokeWidth = 1
                       ..style = PaintingStyle.stroke,

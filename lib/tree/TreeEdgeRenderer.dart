@@ -8,7 +8,7 @@ class TreeEdgeRenderer extends EdgeRenderer {
   var linePath = Path();
 
   @override
-  void render(Canvas canvas, Graph graph, Paint paint) {
+  void render(Canvas canvas, Graph graph, EdgePaintBuilder? paintBuilder) {
     var levelSeparationHalf = configuration.levelSeparation / 2;
 
     graph.nodes.forEach((node) {
@@ -16,7 +16,11 @@ class TreeEdgeRenderer extends EdgeRenderer {
 
       children.forEach((child) {
         var edge = graph.getEdgeBetween(node, child);
-        var edgePaint = (edge?.paint ?? paint)..style = PaintingStyle.stroke;
+        var edgePaint = (edge?.paint ??
+            paintBuilder?.call(edge) ??
+            EdgeRenderer.defaultPaint)
+          ..style = PaintingStyle.stroke;
+
         linePath.reset();
         switch (configuration.orientation) {
           case BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM:

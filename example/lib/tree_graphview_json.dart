@@ -96,7 +96,7 @@ class _TreeViewPageFromJsonState extends State<TreeViewPageFromJson> {
                     graph: graph,
                     algorithm: BuchheimWalkerAlgorithm(
                         builder, TreeEdgeRenderer(builder)),
-                    paint: Paint()
+                    edgePaintBuilder: (edge) => Paint()
                       ..color = Colors.green
                       ..strokeWidth = 1
                       ..style = PaintingStyle.stroke,

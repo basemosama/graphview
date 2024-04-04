@@ -1,7 +1,13 @@
 part of graphview;
 
 abstract class EdgeRenderer {
-  void render(Canvas canvas, Graph graph, Paint paint);
+  void render(Canvas canvas, Graph graph, EdgePaintBuilder? paintBuilder);
+
+  static Paint defaultPaint = (Paint()
+    ..color = Colors.black
+    ..strokeWidth = 3)
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.butt;
 }
 
 void _drawDottedLine(Canvas canvas, Offset start, Offset end, Paint paint) {

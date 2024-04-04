@@ -1,56 +1,45 @@
 library graphview;
 
-import 'dart:collection';
-import 'dart:math';
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
+import 'dart:math';
+
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:collection/collection.dart' show IterableExtension;
-
-part 'Graph.dart';
 
 part 'Algorithm.dart';
-
+part 'Graph.dart';
 part 'edgerenderer/ArrowEdgeRenderer.dart';
-
 part 'edgerenderer/EdgeRenderer.dart';
-
 part 'forcedirected/FruchtermanReingoldAlgorithm.dart';
-
 part 'layered/SugiyamaAlgorithm.dart';
-
 part 'layered/SugiyamaConfiguration.dart';
-
 part 'layered/SugiyamaEdgeData.dart';
-
 part 'layered/SugiyamaEdgeRenderer.dart';
-
 part 'layered/SugiyamaNodeData.dart';
-
 part 'tree/BuchheimWalkerAlgorithm.dart';
-
 part 'tree/BuchheimWalkerConfiguration.dart';
-
 part 'tree/BuchheimWalkerNodeData.dart';
-
 part 'tree/TreeEdgeRenderer.dart';
 
 typedef NodeWidgetBuilder = Widget Function(Node node);
+typedef EdgePaintBuilder = Paint Function(Edge? edge);
 
 class GraphView extends StatefulWidget {
   final Graph graph;
   final Algorithm algorithm;
-  final Paint? paint;
   final NodeWidgetBuilder builder;
+  final EdgePaintBuilder? edgePaintBuilder;
   final bool animated;
 
   GraphView(
       {Key? key,
       required this.graph,
       required this.algorithm,
-      this.paint,
+      this.edgePaintBuilder,
       required this.builder,
       this.animated = true})
       : super(key: key);
@@ -67,7 +56,7 @@ class _GraphViewState extends State<GraphView> {
         key: widget.key,
         graph: widget.graph,
         algorithm: widget.algorithm,
-        paint: widget.paint,
+        edgePaintBuilder: widget.edgePaintBuilder,
         builder: widget.builder,
       );
     } else {
@@ -75,7 +64,7 @@ class _GraphViewState extends State<GraphView> {
         key: widget.key,
         graph: widget.graph,
         algorithm: widget.algorithm,
-        paint: widget.paint,
+        edgePaintBuilder: widget.edgePaintBuilder,
         builder: widget.builder,
       );
     }
@@ -85,13 +74,13 @@ class _GraphViewState extends State<GraphView> {
 class _GraphView extends MultiChildRenderObjectWidget {
   final Graph graph;
   final Algorithm algorithm;
-  final Paint? paint;
+  final EdgePaintBuilder? edgePaintBuilder;
 
   _GraphView(
       {Key? key,
       required this.graph,
       required this.algorithm,
-      this.paint,
+      this.edgePaintBuilder,
       required NodeWidgetBuilder builder})
       : super(key: key, children: _extractChildren(graph, builder)) {
     assert(() {
@@ -119,7 +108,7 @@ class _GraphView extends MultiChildRenderObjectWidget {
 
   @override
   RenderCustomLayoutBox createRenderObject(BuildContext context) {
-    return RenderCustomLayoutBox(graph, algorithm, paint);
+    return RenderCustomLayoutBox(graph, algorithm, edgePaintBuilder);
   }
 
   @override
@@ -128,7 +117,7 @@ class _GraphView extends MultiChildRenderObjectWidget {
     renderObject
       ..graph = graph
       ..algorithm = algorithm
-      ..edgePaint = paint;
+      ..edgePaint = edgePaintBuilder;
   }
 }
 
@@ -138,29 +127,22 @@ class RenderCustomLayoutBox extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, NodeBoxData> {
   late Graph _graph;
   late Algorithm _algorithm;
-  late Paint _paint;
-
+  late EdgePaintBuilder? _edgePaintBuilder;
   RenderCustomLayoutBox(
     Graph graph,
     Algorithm algorithm,
-    Paint? paint, {
+    EdgePaintBuilder? edgePaintBuilder, {
     List<RenderBox>? children,
   }) {
     _algorithm = algorithm;
     _graph = graph;
-    edgePaint = paint;
+    _edgePaintBuilder = edgePaintBuilder;
     addAll(children);
   }
+  EdgePaintBuilder? get edgePaint => _edgePaintBuilder;
 
-  Paint get edgePaint => _paint;
-
-  set edgePaint(Paint? value) {
-    _paint = value ??
-        (Paint()
-          ..color = Colors.black
-          ..strokeWidth = 3)
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.butt;
+  set edgePaint(EdgePaintBuilder? value) {
+    _edgePaintBuilder = value;
     markNeedsPaint();
   }
 
@@ -242,7 +224,7 @@ class RenderCustomLayoutBox extends RenderBox
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Graph>('graph', graph));
     properties.add(DiagnosticsProperty<Algorithm>('algorithm', algorithm));
-    properties.add(DiagnosticsProperty<Paint>('paint', edgePaint));
+    properties.add(DiagnosticsProperty<EdgePaintBuilder>('paint', edgePaint));
   }
 }
 
@@ -251,7 +233,7 @@ class NodeBoxData extends ContainerBoxParentData<RenderBox> {}
 class _GraphViewAnimated extends StatefulWidget {
   final Graph graph;
   final Algorithm algorithm;
-  final Paint? paint;
+  final EdgePaintBuilder? edgePaintBuilder;
   final NodeWidgetBuilder builder;
   final stepMilis = 25;
 
@@ -259,8 +241,8 @@ class _GraphViewAnimated extends StatefulWidget {
       {Key? key,
       required this.graph,
       required this.algorithm,
-      this.paint,
-      required this.builder}) {}
+      this.edgePaintBuilder,
+      required this.builder});
 
   @override
   _GraphViewAnimatedState createState() => _GraphViewAnimatedState();
@@ -305,7 +287,8 @@ class _GraphViewAnimatedState extends State<_GraphViewAnimated> {
       children: [
         CustomPaint(
           size: MediaQuery.of(context).size,
-          painter: EdgeRender(algorithm, graph, Offset(20, 20)),
+          painter: EdgeRender(algorithm, graph, Offset(20, 20),
+              edgePaintBuilder: widget.edgePaintBuilder),
         ),
         ...List<Widget>.generate(graph.nodeCount(), (index) {
           return Positioned(
@@ -334,21 +317,16 @@ class EdgeRender extends CustomPainter {
   Algorithm algorithm;
   Graph graph;
   Offset offset;
+  EdgePaintBuilder? edgePaintBuilder;
 
-  EdgeRender(this.algorithm, this.graph, this.offset);
+  EdgeRender(this.algorithm, this.graph, this.offset, {this.edgePaintBuilder});
 
   @override
   void paint(Canvas canvas, Size size) {
-    var edgePaint = (Paint()
-      ..color = Colors.black
-      ..strokeWidth = 3)
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.butt;
-
     canvas.save();
     canvas.translate(offset.dx, offset.dy);
 
-    algorithm.renderer!.render(canvas, graph, edgePaint);
+    algorithm.renderer!.render(canvas, graph, edgePaintBuilder);
     canvas.restore();
   }
 

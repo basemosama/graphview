@@ -7,9 +7,9 @@ class ArrowEdgeRenderer extends EdgeRenderer {
   var trianglePath = Path();
 
   @override
-  void render(Canvas canvas, Graph graph, Paint paint) {
+  void render(Canvas canvas, Graph graph, EdgePaintBuilder? edgePaintBuilder) {
     var trianglePaint = Paint()
-      ..color = paint.color
+      ..color = Colors.black
       ..style = PaintingStyle.fill;
 
     graph.edges.forEach((edge) {
@@ -36,13 +36,13 @@ class ArrowEdgeRenderer extends EdgeRenderer {
       Paint? edgeTrianglePaint;
       if (edge.paint != null) {
         edgeTrianglePaint = Paint()
-          ..color = edge.paint?.color ?? paint.color
+          ..color = edgePaintBuilder?.call(edge).color ?? Colors.black
           ..style = PaintingStyle.fill;
       }
 
       var triangleCentroid = drawTriangle(
           canvas,
-          edgeTrianglePaint ?? trianglePaint,
+          edgeTrianglePaint ?? edgePaintBuilder?.call(edge) ?? trianglePaint,
           clippedLine[0],
           clippedLine[1],
           clippedLine[2],
@@ -51,7 +51,9 @@ class ArrowEdgeRenderer extends EdgeRenderer {
       canvas.drawLine(
           Offset(clippedLine[0], clippedLine[1]),
           Offset(triangleCentroid[0], triangleCentroid[1]),
-          edge.paint ?? paint);
+          edge.paint ??
+              edgePaintBuilder?.call(edge) ??
+              EdgeRenderer.defaultPaint);
     });
   }
 

@@ -12,9 +12,9 @@ class SugiyamaEdgeRenderer extends ArrowEdgeRenderer {
   var path = Path();
 
   @override
-  void render(Canvas canvas, Graph graph, Paint paint) {
+  void render(Canvas canvas, Graph graph, EdgePaintBuilder? edgePaintBuilder) {
     var trianglePaint = Paint()
-      ..color = paint.color
+      ..color = Colors.black
       ..style = PaintingStyle.fill;
 
     graph.edges.forEach((edge) {
@@ -34,12 +34,15 @@ class SugiyamaEdgeRenderer extends ArrowEdgeRenderer {
       Paint? edgeTrianglePaint;
       if (edge.paint != null) {
         edgeTrianglePaint = Paint()
-          ..color = edge.paint?.color ?? paint.color
+          ..color = edge.paint?.color ??
+              edgePaintBuilder?.call(edge).color ??
+              Colors.black
           ..style = PaintingStyle.fill;
       }
 
-      var currentPaint = edge.paint ?? paint
-        ..style = PaintingStyle.stroke;
+      var currentPaint =
+          edge.paint ?? edgePaintBuilder?.call(edge) ?? trianglePaint
+            ..style = PaintingStyle.stroke;
 
       if (edgeData.containsKey(edge) && edgeData[edge]!.bendPoints.isNotEmpty) {
         // draw bend points

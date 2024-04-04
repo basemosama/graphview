@@ -24,7 +24,7 @@ class _GraphClusterViewPageState extends State<GraphClusterViewPage> {
                   child: GraphView(
                       graph: graph,
                       algorithm: builder,
-                      paint: Paint()
+                      edgePaintBuilder: (edge) => Paint()
                         ..color = Colors.green
                         ..strokeWidth = 1
                         ..style = PaintingStyle.fill,
