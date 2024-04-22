@@ -69,6 +69,11 @@ class _GraphViewState extends State<GraphView> {
       );
     }
   }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 }
 
 class _GraphView extends MultiChildRenderObjectWidget {
@@ -201,9 +206,10 @@ class RenderCustomLayoutBox extends RenderBox
       position++;
     }
 
-    _graph.graphObserver.forEach((element) {
-      element.onPerformLayout();
-    });
+    final observer = graph.graphObserver.toList();
+    for (final o in observer) {
+      o.onPerformLayout();
+    }
   }
 
   @override
