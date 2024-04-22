@@ -200,6 +200,10 @@ class RenderCustomLayoutBox extends RenderBox
       child = node.nextSibling;
       position++;
     }
+
+    _graph.graphObserver.forEach((element) {
+      element.onPerformLayout();
+    });
   }
 
   @override

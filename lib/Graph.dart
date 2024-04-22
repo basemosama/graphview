@@ -226,4 +226,6 @@ class Edge {
 
 abstract class GraphObserver {
   void notifyGraphInvalidated();
+
+  void onPerformLayout();
 }
